@@ -1,0 +1,4 @@
+colour-science
+numpy
+scipy
+#tifffile
