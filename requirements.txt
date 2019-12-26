@@ -1,4 +1,5 @@
 colour-science
 numpy
 scipy
+pillow
 #tifffile
