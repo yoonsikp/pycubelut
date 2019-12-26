@@ -19,7 +19,7 @@ INFO: Completed in  6.71s
 $ python3 pycubelut.py --help
 usage: pycubelut.py [-h] -l LUT [-o OUTFOLDER] [-g] [-v] [-t [THUMB]] input
 
-Library for parsing and applying Adobe Cube LUTs
+Tool for applying Adobe Cube LUTs to images
 
 positional arguments:
   input                 input image filename/folder

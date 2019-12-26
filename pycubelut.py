@@ -156,7 +156,7 @@ if __name__ == "__main__":
     import time
 
     parser = argparse.ArgumentParser(
-        description="Library for parsing and applying Adobe Cube LUTs")
+        description="Tool for applying Adobe Cube LUTs to images")
     parser.add_argument("input",
                         help="input image filename/folder")
     parser.add_argument("-l", "--lut",
