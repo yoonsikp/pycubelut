@@ -167,7 +167,7 @@ if __name__ == "__main__":
                         help="convert to Log before LUT", action="store_true")
     parser.add_argument("-v", "--verbose",
                         help="print status and benchmark messages",
-                        action = 'append_const', const = 1)
+                        action='append_const', const=1)
     parser.add_argument('-t', '--thumb', type=int, nargs='?', const=500,
                         default=0, help="create <= 500px thumbnails,"
                         "optionally specify max size")
@@ -175,11 +175,12 @@ if __name__ == "__main__":
     #                     help="number of processes to spawn, defaults to 1")
     args = parser.parse_args()
     args.verbose = 0 if args.verbose is None else sum(args.verbose)
-    
+
     if args.verbose == 2:
         logging.basicConfig(level=logging.DEBUG)
     elif args.verbose == 1:
-        logging.basicConfig(level=logging.INFO)
+        logging.basicConfig(level=logging.INFO,
+                            format='%(levelname)s: %(message)s')
     else:
         logging.basicConfig(format='%(levelname)s: %(message)s')
 
@@ -189,7 +190,7 @@ if __name__ == "__main__":
         and saves the image in <args.outfolder> or the same folder as the
         image if <args.outfolder> doesn't exist. If <args.thumb> is specified,
         then the image will be resized before being transformed.
-        
+
         <image_path>: path to the image file
         """
         logging.info("Processing image: " + image_path)
@@ -282,4 +283,3 @@ if __name__ == "__main__":
     end_time = time.time()
 
     logging.info("Completed in" + '% 6.2f' % (end_time - start_time) + "s")
-    
