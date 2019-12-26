@@ -166,11 +166,11 @@ if __name__ == "__main__":
     parser.add_argument("-g", "--log",
                         help="convert to Log before LUT", action="store_true")
     parser.add_argument("-v", "--verbose",
-                        help="print status and benchmark messages",
+                        help="control verbosity and info messages",
                         action='append_const', const=1)
     parser.add_argument('-t', '--thumb', type=int, nargs='?', const=500,
-                        default=0, help="create <= 500px thumbnails,"
-                        "optionally specify max size")
+                        default=0, help="resizes to <= 500px,"
+                        " optionally specify max size")
     # parser.add_argument("-j", "--jobs", type=int, default=1,
     #                     help="number of processes to spawn, defaults to 1")
     args = parser.parse_args()
