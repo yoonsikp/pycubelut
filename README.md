@@ -9,4 +9,6 @@ INFO: Completed in  6.71s
 ```
 
 # Sample Image
-
+<p align="center">
+  <img src=https://github.com/yoonsikp/pycubelut/blob/master/sample.jpg?raw=true width=100%>
+</p>
