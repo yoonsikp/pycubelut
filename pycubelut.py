@@ -77,8 +77,7 @@ class CubeLUT:
                 elif "LUT_1D_SIZE" in line:
                     self.dim = 1
                     self.size = int(line.split()[1])
-                    logging.error('1D not supported: ' + self.filename)
-                    exit(1)
+                    raise Exception('1D not supported: ' + self.filename)
                     # assert self.size <= 65536 and self.size >= 2
                 elif "LUT_3D_SIZE" in line:
                     self.dim = 3
