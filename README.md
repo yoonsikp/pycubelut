@@ -1,4 +1,6 @@
 # pycubelut
+[![GitHub license](https://img.shields.io/github/license/yoonsikp/pycubelut.svg)](https://github.com/yoonsikp/pycubelut/blob/master/LICENSE)
+
 Stop wasting time with sloppy 'gram filters, and use `pycubelut` to easily add that *pro* feel to your images!
 
 ## Quick Start
