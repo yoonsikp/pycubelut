@@ -10,8 +10,6 @@ INFO: Processing image: P1040326.jpg
 INFO: Completed in  6.71s
 ```
 
-Warning: If your input image is in a Log colorspace, make sure to choose a Log LUT!
-
 ## Sample Image
 <p align="center">
   <img src=https://github.com/yoonsikp/pycubelut/blob/master/sample.jpg?raw=true width=100%>
@@ -25,6 +23,7 @@ In the context of images and video, a Lookup Table (LUT) is a table describing a
 3D LUTs are essentially grids in the shape of cubes (why Adobe used `.cube` for their LUT file extension). In order to encode a transformation of the complete 8 bit RGB space, 256x256x256 = 17 million mappings are required. However, the Cube format allows for interpolation of values from a LUT defined with a fewer number of points, such as a LUT with only 33x33x33 = 36 thousand mappings.
 
 ## Usage
+Warning: If your input image is in a Log colorspace, make sure to choose a Log LUT!
 ```
 $ python3 pycubelut.py --help
 usage: pycubelut.py [-h] -l LUT [-o OUTFOLDER] [-g] [-v] [-t [THUMB]] input
