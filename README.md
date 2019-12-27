@@ -4,7 +4,7 @@
 Stop wasting time with sloppy 'gram filters, and use `pycubelut` to easily add that *pro* feel to your images!
 
 ## Quick Start
-First, download one of many free `.cube` LUTs online \[[1](https://luts.iwltbap.com/#freeware), [2](https://www.freepresets.com/product/free-luts-cali-vibes/)\]. Then, run the following command with your LUT and image.
+Download one of many free `.cube` LUTs online \[[1](https://luts.iwltbap.com/#freeware), [2](https://www.freepresets.com/product/free-luts-cali-vibes/)\]. Then, run the following with your downloaded LUT and image.
 
 ```
 $ python3 pycubelut.py --lut F-8700-V2-STD.cube P1040326.jpg -v
