@@ -18,7 +18,7 @@ INFO: Completed in  6.71s
 </p>
 
 ## Overview
-Many professionals apply 3D LUTs to obtain a certain look to their images and videos, and this is usually done with proprietary software such as Adobe Photoshop or Final Cut Pro. `pycubelut` was created to be the first easy to use, open-source, command-line tool to apply Adobe Cube LUTs to images.
+Many professionals apply 3D LUTs to obtain a certain look and feel to their images and videos, which is usually done with proprietary software such as Adobe Photoshop or Final Cut Pro. `pycubelut` was created to be the first easy to use, open-source, command-line tool to apply Adobe Cube LUTs to images.
 
 In the context of images, a Lookup Table (LUT) is a table describing a transformation of RGB values. There are multiple types of LUTs used in image processing, most common being 1D LUTs and 3D LUTs. A 1D LUT contains an independent transformation for each colour channel, meaning there would be three 1D LUTs defined (for Red, Green, and Blue). However, a 3D LUT has every colour in RGB space directly mapped to another specified colour (ℝ³ -> ℝ³), allowing for powerful and arbitrary transformations, such as greyscale, false colour, and hue shifts. All colour effects, such as gamma, contrast, brightness, etc. can be encoded as a 3D LUT.
 
