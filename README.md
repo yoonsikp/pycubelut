@@ -2,6 +2,8 @@
 Stop wasting time with sloppy 'gram filters, and use `pycubelut` to easily add that "pro" feel to your images!
 
 ## Quick Start
+Start by downloading one of many free `.cube` LUTs online: [Example 1](https://luts.iwltbap.com/#freeware), [Example 2](https://www.freepresets.com/product/free-luts-cali-vibes/)
+
 ```
 $ python3 pycubelut.py --lut F-8700-V2-STD.cube P1040326.jpg -v
 INFO: Processing image: P1040326.jpg
