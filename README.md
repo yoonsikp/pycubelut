@@ -59,7 +59,7 @@ $ python3 pycubelut.py --lut ./my_luts/ -o ./new_images/ ./my_images/ -v
 ```
 
 ### Thumbnail Mode
-Resizes images for a huge speedup, useful for Multiple LUTs
+Resizes images for a huge speedup, useful for multiple LUTs
 ```
 $ python3 pycubelut.py --lut ./my_luts/ P1040326.jpg -v -t
 ```
