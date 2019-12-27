@@ -1,5 +1,5 @@
 # pycubelut
-Stop wasting time with sloppy 'gram filters, and use `pycubelut` to easily add that "pro" feel to your images!
+Stop wasting time with sloppy 'gram filters, and use `pycubelut` to easily add that *pro* feel to your images!
 
 ## Quick Start
 First, download one of many free `.cube` LUTs online: [Example 1](https://luts.iwltbap.com/#freeware), [Example 2](https://www.freepresets.com/product/free-luts-cali-vibes/), [Example 3](https://freshluts.com).
