@@ -41,3 +41,20 @@ optional arguments:
                         resizes to <= 500px, optionally specify max size
 ```
 
+### Multiple LUTs
+Applies all `.cube` files in the folder to the image(s)
+```
+$ python3 pycubelut.py --lut ./my_luts/ P1040326.jpg -v
+```
+
+### Batch Image Processing
+Processes all images in the input folder, and outputs to a specified folder
+```
+$ python3 pycubelut.py --lut ./my_luts/ -o ./new_images/ ./my_images/ -v
+```
+
+### Thumbnail Mode
+Resizes images for a huge speedup, useful for Multiple LUTs
+```
+$ python3 pycubelut.py --lut ./my_luts/ P1040326.jpg -v -t
+```
