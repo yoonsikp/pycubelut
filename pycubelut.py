@@ -1,4 +1,4 @@
-"""pycubelut v0.1
+"""pycubelut v0.2
 === Author ===
 Yoonsik Park
 park.yoonsik@icloud.com
