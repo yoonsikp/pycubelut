@@ -28,7 +28,9 @@ In the context of images, a Lookup Table (LUT) is a table describing a transform
 Warning: If your input image is in a Log colorspace, make sure to choose a Log LUT!
 ```
 $ python3 pycubelut.py --help
-usage: pycubelut.py [-h] -l LUT [-o OUTFOLDER] [-g] [-v] [-t [THUMB]] input
+usage: pycubelut.py [-h] -l LUT [-o OUTFOLDER] [-g] [-v] [-t [THUMB]]
+                    [-j JOBS]
+                    input
 
 Tool for applying Adobe Cube LUTs to images
 
@@ -44,6 +46,8 @@ optional arguments:
   -v, --verbose         control verbosity and info messages
   -t [THUMB], --thumb [THUMB]
                         resizes to <= 500px, optionally specify max size
+  -j JOBS, --jobs JOBS  number of processes to spawn, defaults to number of
+                        logical CPUs
 ```
 
 ### Multiple LUTs
