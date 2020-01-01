@@ -56,7 +56,7 @@ $ python3 pycubelut.py ./my_luts/ P1040326.jpg -v
 ### Batch Image Processing
 Processes all images in the input folder, and outputs to a specified folder
 ```
-$ python3 pycubelut.py ./my_luts/ ./my_images/ -o ./new_images/
+$ python3 pycubelut.py ./my_luts/ ./my_images/ -o ./new_images/ -v
 ```
 
 ### Thumbnail Mode
