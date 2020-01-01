@@ -198,8 +198,7 @@ def process_image(image_path, output_path, thumb, lut, log):
             new_im.save(output_path + os.path.basename(image_name) +
                         '_' + lutname + image_ext, quality=95)
 
-# Command Line Interface
-if __name__ == "__main__":
+def main():
     from PIL import Image
     # import tifffile as tiff
     import argparse
@@ -207,10 +206,10 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(
         description="Tool for applying Adobe Cube LUTs to images")
-    parser.add_argument("input",
+    parser.add_argument("LUT",
+                    help="Cube LUT filename/folder")
+    parser.add_argument("INPUT",
                         help="input image filename/folder")
-    parser.add_argument("-l", "--lut",
-                        help="Cube LUT filename/folder", required=True)
     parser.add_argument("-o", "--out",
                         help="output image folder")
     parser.add_argument("-g", "--log",
@@ -239,7 +238,7 @@ if __name__ == "__main__":
     start_time = time.time()
 
     # args.out is required if input is a folder
-    if os.path.isdir(args.input):
+    if os.path.isdir(args.INPUT):
         if args.out is None:
             logging.error("For batch processing, output must be specified")
             exit(1)
@@ -252,11 +251,11 @@ if __name__ == "__main__":
             exit(1)
 
     # determine if lut argument is a folder
-    if os.path.isdir(args.lut):
+    if os.path.isdir(args.LUT):
         # initialize all LUTs in folder
-        args.lut = os.path.join(args.lut, '')
-        for filename in os.listdir(args.lut):
-            file_path = os.path.join(args.lut, filename)
+        args.LUT = os.path.join(args.LUT, '')
+        for filename in os.listdir(args.LUT):
+            file_path = os.path.join(args.LUT, filename)
             if not file_path.lower().endswith('.cube'):
                 continue
             elif not os.path.isfile(file_path):
@@ -264,20 +263,20 @@ if __name__ == "__main__":
             else:
                 luts.append(CubeLUT(file_path))
     else:
-        # Exit if args.lut is not a file
-        if not os.path.isfile(args.lut):
-            logging.error(args.lut + " doesn't exist")
+        # Exit if args.LUT is not a file
+        if not os.path.isfile(args.LUT):
+            logging.error(args.LUT + " doesn't exist")
             exit(1)
         # Single lut at <luts[0]>
-        luts.append(CubeLUT(args.lut))
+        luts.append(CubeLUT(args.LUT))
 
     image_queue = []
     # determine if input is a folder
-    if os.path.isdir(args.input):
-        args.input = os.path.join(args.input, '')
+    if os.path.isdir(args.INPUT):
+        args.INPUT = os.path.join(args.INPUT, '')
         # process all images in folder
-        for filename in os.listdir(args.input):
-            file_path = os.path.join(args.input, filename)
+        for filename in os.listdir(args.INPUT):
+            file_path = os.path.join(args.INPUT, filename)
             if os.path.isfile(file_path):
                 for lut in luts:
                     image_queue.append((file_path, args.out,
@@ -285,7 +284,7 @@ if __name__ == "__main__":
     else:
         # process single image
         for lut in luts:
-            image_queue.append((args.input, args.out,
+            image_queue.append((args.INPUT, args.out,
                 args.thumb, lut, args.log))
 
     logging.info("Starting pool with max " + str(len(image_queue))
@@ -296,3 +295,7 @@ if __name__ == "__main__":
     end_time = time.time()
 
     logging.info("Completed in" + '% 6.2f' % (end_time - start_time) + "s")
+
+# Command Line Interface
+if __name__ == "__main__":
+    main()
