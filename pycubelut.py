@@ -14,7 +14,7 @@ from colour.algebra.interpolation import table_interpolation_tetrahedral, \
     table_interpolation_trilinear
 from scipy.interpolate import RegularGridInterpolator
 import os
-
+from multiprocessing import Pool
 
 class CubeLUT:
     """This class holds Cube LUT data and methods to apply the LUT to 2D RGB
@@ -146,6 +146,57 @@ class CubeLUT:
             image[:, i] = i_func(image[:])
         return image.reshape(orig_image_shape)
 
+def process_image(image_path, output_path, thumb, lut, log):
+    """Opens the image at <image_path>, transforms it using the passed
+    <lut> with trilinear interpolation, and saves the image at
+    <output_path>, or if it is None, then the same folder as <image_path>.
+    If <thumb> is greater than zero, then the image will be resized to have
+    a max height or width of <thumb> before being transformed. Iff <log> is
+    True, the image will be changed to log colorspace before the LUT.
+
+    <image_path>: path to input image file
+    <output_path>: path to output image folder
+    <thumb>: max size for image dimension, 0 indicates no resizing
+    <lut>: CubeLUT object containing LUT
+    <log>: iff True, transform to log colorspace
+    """
+    logging.info("Processing image: " + image_path)
+    image_name, image_ext = os.path.splitext(image_path)
+    if image_ext.lower() == '.tif' or image_ext.lower() == '.tiff':
+        # im = tiff.imread(image_path)
+        logging.warn("tiff file not supported yet, continuing...")
+        return
+    else:
+        # attempt to open file as an image
+        try:
+            im = Image.open(image_path)
+        except IOError:
+            logging.warn(image_path + " not an image file, continuing...")
+            return
+        if (im.mode != 'RGB'):
+            im = im.convert('RGB')
+        if thumb > 0:
+            logging.debug("Resizing image: " + image_name)
+            new_dims = (int(im.size[0] * thumb / max(im.size)),
+                        int(im.size[1] * thumb / max(im.size)))
+            im = im.resize(new_dims, Image.BICUBIC)
+            image_ext = "_thumb" + image_ext
+        logging.debug("Applying LUT: " + lut.filename)
+        im_array = np.asarray(im, dtype=np.float32) / 255
+        if log:
+            im_array = im_array ** (1/2.2)
+        lut.transform_trilinear(im_array, in_place=True)
+        if log:
+            im_array = im_array ** (2.2)
+        im_array = im_array * 255
+        new_im = Image.fromarray(np.uint8(im_array))
+        lutname = os.path.split(lut.filename)[1][:-5].replace(' ', '_')
+        if output_path is None:
+            new_im.save(image_name + '_' + lutname + image_ext,
+                        quality=95)
+        else:
+            new_im.save(output_path + os.path.basename(image_name) +
+                        '_' + lutname + image_ext, quality=95)
 
 # Command Line Interface
 if __name__ == "__main__":
@@ -170,8 +221,9 @@ if __name__ == "__main__":
     parser.add_argument('-t', '--thumb', type=int, nargs='?', const=500,
                         default=0, help="resizes to <= 500px,"
                         " optionally specify max size")
-    # parser.add_argument("-j", "--jobs", type=int, default=1,
-    #                     help="number of processes to spawn, defaults to 1")
+    parser.add_argument("-j", "--jobs", type=int,
+                         help="number of processes to spawn, defaults to"
+                         "number of logical CPUs")
     args = parser.parse_args()
     args.verbose = 0 if args.verbose is None else sum(args.verbose)
 
@@ -182,54 +234,6 @@ if __name__ == "__main__":
                             format='%(levelname)s: %(message)s')
     else:
         logging.basicConfig(format='%(levelname)s: %(message)s')
-
-    def process_image(image_path):
-        """Opens the image at <image_path>, transforms it using all available
-        luts in the global <luts> variable with trilinear interpolation,
-        and saves the image in <args.outfolder> or the same folder as the
-        image if <args.outfolder> doesn't exist. If <args.thumb> is specified,
-        then the image will be resized before being transformed.
-
-        <image_path>: path to the image file
-        """
-        logging.info("Processing image: " + image_path)
-        image_name, image_ext = os.path.splitext(image_path)
-        if image_ext.lower() == '.tif' or image_ext.lower() == '.tiff':
-            # im = tiff.imread(image_path)
-            logging.warn("tiff file not supported yet, continuing...")
-            return
-        else:
-            # attempt to open file as an image
-            try:
-                im = Image.open(image_path)
-            except IOError:
-                logging.warn(image_path + " not an image file, continuing...")
-                return
-            if (im.mode != 'RGB'):
-                im = im.convert('RGB')
-            if args.thumb > 0:
-                logging.debug("Resizing image: " + image_name)
-                new_dims = (int(im.size[0] * args.thumb / max(im.size)),
-                            int(im.size[1] * args.thumb / max(im.size)))
-                im = im.resize(new_dims, Image.BICUBIC)
-                image_ext = "_thumb" + image_ext
-            for lut in luts:
-                logging.debug("Applying LUT: " + lut.filename)
-                im_array = np.asarray(im, dtype=np.float32) / 255
-                if args.log:
-                    im_array = im_array ** (1/2.2)
-                lut.transform_trilinear(im_array, in_place=True)
-                if args.log:
-                    im_array = im_array ** (2.2)
-                im_array = im_array * 255
-                new_im = Image.fromarray(np.uint8(im_array))
-                lutname = os.path.split(lut.filename)[1][:-5].replace(' ', '_')
-                if args.outfolder is None:
-                    new_im.save(image_name + '_' + lutname + image_ext,
-                                quality=95)
-                else:
-                    new_im.save(args.outfolder + os.path.basename(image_name) +
-                                '_' + lutname + image_ext, quality=95)
 
     luts = []
     start_time = time.time()
@@ -267,6 +271,7 @@ if __name__ == "__main__":
         # Single lut at <luts[0]>
         luts.append(CubeLUT(args.lut))
 
+    image_queue = []
     # determine if input is a folder
     if os.path.isdir(args.input):
         args.input = os.path.join(args.input, '')
@@ -274,10 +279,19 @@ if __name__ == "__main__":
         for filename in os.listdir(args.input):
             file_path = os.path.join(args.input, filename)
             if os.path.isfile(file_path):
-                process_image(file_path)
+                for lut in luts:
+                    image_queue.append((file_path, args.outfolder,
+                        args.thumb, lut, args.log))
     else:
         # process single image
-        process_image(args.input)
+        for lut in luts:
+            image_queue.append((args.input, args.outfolder,
+                args.thumb, lut, args.log))
+
+    logging.info("Starting pool with max " + str(len(image_queue))
+                    + " tasks in queue")
+    with Pool(processes=args.jobs) as pool:
+        pool.starmap(process_image, image_queue)
 
     end_time = time.time()
 
