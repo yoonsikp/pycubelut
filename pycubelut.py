@@ -204,7 +204,7 @@ def main():
     import argparse
     import time
     import random
-    
+
     parser = argparse.ArgumentParser(
         description="Tool for applying Adobe Cube LUTs to images")
     parser.add_argument("LUT",
@@ -290,7 +290,7 @@ def main():
 
     logging.info("Starting pool with max " + str(len(image_queue))
                     + " tasks in queue")
-    with Pool(processes=args.jobs) as pool:
+    with Pool(processes=args.jobs, maxtasksperchild=20) as pool:
         random.shuffle(image_queue)
         pool.starmap(process_image, image_queue)
 
