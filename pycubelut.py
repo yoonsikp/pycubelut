@@ -160,6 +160,7 @@ def process_image(image_path, output_path, thumb, lut, log):
     <lut>: CubeLUT object containing LUT
     <log>: iff True, transform to log colorspace
     """
+    from PIL import Image
     logging.info("Processing image: " + image_path)
     image_name, image_ext = os.path.splitext(image_path)
     if image_ext.lower() == '.tif' or image_ext.lower() == '.tiff':
@@ -199,7 +200,6 @@ def process_image(image_path, output_path, thumb, lut, log):
                         '_' + lutname + image_ext, quality=95)
 
 def main():
-    from PIL import Image
     # import tifffile as tiff
     import argparse
     import time
