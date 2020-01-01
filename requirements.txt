@@ -1,5 +1,6 @@
-colour-science
-numpy
-scipy
-pillow
-#tifffile
+colour-science==0.3.14
+imageio==2.6.1
+numpy==1.17.3
+pillow==6.2.1
+scipy==1.4.1
+six==1.13.0
