@@ -222,7 +222,7 @@ if __name__ == "__main__":
                         default=0, help="resizes to <= 500px,"
                         " optionally specify max size")
     parser.add_argument("-j", "--jobs", type=int,
-                         help="number of processes to spawn, defaults to"
+                         help="number of processes to spawn, defaults to "
                          "number of logical CPUs")
     args = parser.parse_args()
     args.verbose = 0 if args.verbose is None else sum(args.verbose)
