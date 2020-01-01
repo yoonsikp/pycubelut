@@ -28,20 +28,17 @@ In the context of images, a Lookup Table (LUT) is a table describing a transform
 Warning: If your input image is in a Log colorspace, make sure to choose a Log LUT!
 ```
 $ python3 pycubelut.py --help
-usage: pycubelut.py [-h] -l LUT [-o OUTFOLDER] [-g] [-v] [-t [THUMB]]
-                    [-j JOBS]
-                    input
+usage: pycubelut.py [-h] [-o OUT] [-g] [-v] [-t [THUMB]] [-j JOBS] LUT INPUT
 
 Tool for applying Adobe Cube LUTs to images
 
 positional arguments:
-  input                 input image filename/folder
+  LUT                   Cube LUT filename/folder
+  INPUT                 input image filename/folder
 
 optional arguments:
   -h, --help            show this help message and exit
-  -l LUT, --lut LUT     Cube LUT filename/folder
-  -o OUTFOLDER, --outfolder OUTFOLDER
-                        output image folder
+  -o OUT, --out OUT     output image folder
   -g, --log             convert to Log before LUT
   -v, --verbose         control verbosity and info messages
   -t [THUMB], --thumb [THUMB]
@@ -53,17 +50,17 @@ optional arguments:
 ### Multiple LUTs
 Applies all `.cube` files in the folder to the image(s)
 ```
-$ python3 pycubelut.py --lut ./my_luts/ P1040326.jpg -v
+$ python3 pycubelut.py ./my_luts/ P1040326.jpg -v
 ```
 
 ### Batch Image Processing
 Processes all images in the input folder, and outputs to a specified folder
 ```
-$ python3 pycubelut.py --lut ./my_luts/ -o ./new_images/ ./my_images/ -v
+$ python3 pycubelut.py ./my_luts/ ./my_images/ -o ./new_images/
 ```
 
 ### Thumbnail Mode
 Resizes images for a huge speedup, useful for multiple LUTs
 ```
-$ python3 pycubelut.py --lut ./my_luts/ P1040326.jpg -v -t
+$ python3 pycubelut.py ./my_luts/ P1040326.jpg -v -t
 ```
