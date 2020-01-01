@@ -90,7 +90,7 @@ class CubeLUT:
         x = self.size
         self.data = self.data.reshape([x, x, x, 3], order='F')
         if self.domain_min != (0., 0., 0.) or self.domain_max != (1., 1., 1.):
-            logging.warn("nonstandard domain for LUT, output may be wrong")
+            logging.warning("nonstandard domain for LUT, output may be wrong")
 
     def transform_tetrahedral(self, image, in_place=False):
         """Returns the transformed <image>, using the LUT from <self.data>.
@@ -165,14 +165,14 @@ def process_image(image_path, output_path, thumb, lut, log):
     image_name, image_ext = os.path.splitext(image_path)
     if image_ext.lower() == '.tif' or image_ext.lower() == '.tiff':
         # im = tiff.imread(image_path)
-        logging.warn("tiff file not supported yet, continuing...")
+        logging.warning("tiff file not supported yet, continuing...")
         return
     else:
         # attempt to open file as an image
         try:
             im = Image.open(image_path)
         except IOError:
-            logging.warn(image_path + " not an image file, continuing...")
+            logging.info(image_path + " not an image file, continuing...")
             return
         if (im.mode != 'RGB'):
             im = im.convert('RGB')
@@ -203,7 +203,8 @@ def main():
     # import tifffile as tiff
     import argparse
     import time
-
+    import random
+    
     parser = argparse.ArgumentParser(
         description="Tool for applying Adobe Cube LUTs to images")
     parser.add_argument("LUT",
@@ -290,6 +291,7 @@ def main():
     logging.info("Starting pool with max " + str(len(image_queue))
                     + " tasks in queue")
     with Pool(processes=args.jobs) as pool:
+        random.shuffle(image_queue)
         pool.starmap(process_image, image_queue)
 
     end_time = time.time()
