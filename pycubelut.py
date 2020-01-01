@@ -211,7 +211,7 @@ if __name__ == "__main__":
                         help="input image filename/folder")
     parser.add_argument("-l", "--lut",
                         help="Cube LUT filename/folder", required=True)
-    parser.add_argument("-o", "--outfolder",
+    parser.add_argument("-o", "--out",
                         help="output image folder")
     parser.add_argument("-g", "--log",
                         help="convert to Log before LUT", action="store_true")
@@ -238,17 +238,17 @@ if __name__ == "__main__":
     luts = []
     start_time = time.time()
 
-    # outfolder is required if input is a folder
+    # args.out is required if input is a folder
     if os.path.isdir(args.input):
-        if args.outfolder is None:
+        if args.out is None:
             logging.error("For batch processing, output must be specified")
             exit(1)
 
-    # Check if outfolder is a valid folder
-    if args.outfolder is not None:
-        args.outfolder = os.path.join(args.outfolder, '')
-        if not os.path.isdir(args.outfolder):
-            logging.error(args.outfolder + " not a folder or doesn't exist")
+    # Check if args.out is a valid folder
+    if args.out is not None:
+        args.out = os.path.join(args.out, '')
+        if not os.path.isdir(args.out):
+            logging.error(args.out + " not a folder or doesn't exist")
             exit(1)
 
     # determine if lut argument is a folder
@@ -280,12 +280,12 @@ if __name__ == "__main__":
             file_path = os.path.join(args.input, filename)
             if os.path.isfile(file_path):
                 for lut in luts:
-                    image_queue.append((file_path, args.outfolder,
+                    image_queue.append((file_path, args.out,
                         args.thumb, lut, args.log))
     else:
         # process single image
         for lut in luts:
-            image_queue.append((args.input, args.outfolder,
+            image_queue.append((args.input, args.out,
                 args.thumb, lut, args.log))
 
     logging.info("Starting pool with max " + str(len(image_queue))
