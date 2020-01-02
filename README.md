@@ -1,5 +1,6 @@
 # pycubelut
 [![GitHub license](https://img.shields.io/github/license/yoonsikp/pycubelut.svg)](https://github.com/yoonsikp/pycubelut/blob/master/LICENSE)
+[![PyPi Version](https://img.shields.io/pypi/v/pycubelut?color=green)](https://pypi.org/project/pycubelut/)
 
 Stop wasting time with sloppy 'gram filters, and use `pycubelut` to easily add that *pro* feel to your images!
 
@@ -51,17 +52,17 @@ optional arguments:
 ### Multiple LUTs
 Applies all `.cube` files in the folder to the image(s)
 ```
-$ cubelut ./my_luts/ P1040326.jpg -v
+$ cubelut ./my_luts/ P1040326.jpg
 ```
 
 ### Batch Image Processing
 Processes all images in the input folder, and outputs to a specified folder
 ```
-$ cubelut ./my_luts/ ./my_images/ -o ./new_images/ -v
+$ cubelut ./my_luts/ ./my_images/ -o ./new_images/
 ```
 
 ### Thumbnail Mode
 Resizes images for a huge speedup, useful for multiple LUTs
 ```
-$ cubelut ./my_luts/ P1040326.jpg -v -t
+$ cubelut ./my_luts/ P1040326.jpg -t
 ```
