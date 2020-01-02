@@ -130,3 +130,5 @@ dmypy.json
 
 # poetry
 poetry.lock
+
+.DS_Store
