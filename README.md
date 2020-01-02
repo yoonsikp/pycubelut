@@ -7,7 +7,8 @@ Stop wasting time with sloppy 'gram filters, and use `pycubelut` to easily add t
 Download one of many free `.cube` LUTs online \[[1](https://luts.iwltbap.com/#freeware), [2](https://www.freepresets.com/product/free-luts-cali-vibes/)\]. Then, run the following with your downloaded LUT and image.
 
 ```
-$ python3 pycubelut.py --lut F-8700-V2-STD.cube P1040326.jpg -v
+$ pip3 install pycubelut
+$ cubelut F-8700-V2-STD.cube P1040326.jpg -v
 INFO: Processing image: P1040326.jpg
 INFO: Completed in  6.71s
 ```
@@ -27,8 +28,8 @@ In the context of images, a Lookup Table (LUT) is a table describing a transform
 ## Usage
 Warning: If your input image is in a Log colorspace, make sure to choose a Log LUT!
 ```
-$ python3 pycubelut.py --help
-usage: pycubelut.py [-h] [-o OUT] [-g] [-v] [-t [THUMB]] [-j JOBS] LUT INPUT
+$ cubelut --help
+usage: cubelut [-h] [-o OUT] [-g] [-v] [-t [THUMB]] [-j JOBS] LUT INPUT
 
 Tool for applying Adobe Cube LUTs to images
 
@@ -50,17 +51,17 @@ optional arguments:
 ### Multiple LUTs
 Applies all `.cube` files in the folder to the image(s)
 ```
-$ python3 pycubelut.py ./my_luts/ P1040326.jpg -v
+$ cubelut ./my_luts/ P1040326.jpg -v
 ```
 
 ### Batch Image Processing
 Processes all images in the input folder, and outputs to a specified folder
 ```
-$ python3 pycubelut.py ./my_luts/ ./my_images/ -o ./new_images/ -v
+$ cubelut ./my_luts/ ./my_images/ -o ./new_images/ -v
 ```
 
 ### Thumbnail Mode
 Resizes images for a huge speedup, useful for multiple LUTs
 ```
-$ python3 pycubelut.py ./my_luts/ P1040326.jpg -v -t
+$ cubelut ./my_luts/ P1040326.jpg -v -t
 ```
