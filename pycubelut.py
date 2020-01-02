@@ -16,6 +16,7 @@ from scipy.interpolate import RegularGridInterpolator
 import os
 from multiprocessing import Pool
 
+
 class CubeLUT:
     """This class holds Cube LUT data and methods to apply the LUT to 2D RGB
     numpy arrays. This class only supports 3D LUTs.
@@ -298,6 +299,7 @@ def main():
 
     logging.info("Completed in" + '% 6.2f' % (end_time - start_time) + "s")
 
+__all__ = ['CubeLUT']
 # Command Line Interface
 if __name__ == "__main__":
     main()

@@ -15,7 +15,7 @@ numpy = "1.17.3"
 [tool.poetry.dev-dependencies]
 
 [tool.poetry.scripts]
-pycubelut = 'pycubelut:main'
+cubelut = 'pycubelut:main'
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
