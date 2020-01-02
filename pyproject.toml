@@ -1,9 +1,18 @@
 [tool.poetry]
 name = "pycubelut"
-version = "0.2.0"
+version = "0.2.2"
 description = "Tool for Applying Adobe Cube LUTs to Images"
 authors = ["Yoonsik Park <park.yoonsik@icloud.com>"]
 license = "MIT"
+readme = "README.md"
+repository = "https://github.com/yoonsikp/pycubelut"
+keywords = [
+    "cube",
+    "lut",
+    "cubelut",
+    "3d",
+    "python"
+]
 
 [tool.poetry.dependencies]
 python = "^3.5"

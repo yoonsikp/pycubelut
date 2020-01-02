@@ -7,7 +7,7 @@ Stop wasting time with sloppy 'gram filters, and use `pycubelut` to easily add t
 Download one of many free `.cube` LUTs online \[[1](https://luts.iwltbap.com/#freeware), [2](https://www.freepresets.com/product/free-luts-cali-vibes/)\]. Then, run the following with your downloaded LUT and image.
 
 ```
-$ pip3 install pycubelut
+$ sudo pip3 install pycubelut
 $ cubelut F-8700-V2-STD.cube P1040326.jpg -v
 INFO: Processing image: P1040326.jpg
 INFO: Completed in  6.71s
