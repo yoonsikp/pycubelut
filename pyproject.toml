@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pycubelut"
-version = "0.2.2"
+version = "0.2.3"
 description = "Tool for Applying Adobe Cube LUTs to Images"
 authors = ["Yoonsik Park <park.yoonsik@icloud.com>"]
 license = "MIT"
