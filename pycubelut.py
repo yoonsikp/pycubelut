@@ -171,7 +171,10 @@ def main():
             elif not os.path.isfile(file_path):
                 continue
             else:
-                luts.append(read_lut(file_path, clip=args.clip))
+                try:
+                    luts.append(read_lut(file_path, clip=args.clip))
+                except Exception as e:
+                    logging.error(f"Could not read '{file_path}' ({e}); skipping this LUT.")
     else:
         # Exit if args.LUT is not a file
         if not os.path.isfile(args.LUT):
