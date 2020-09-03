@@ -52,11 +52,18 @@ def process_image(image_path, output_path, thumb, lut, log):
             image_ext = "_thumb" + image_ext
         logging.debug("Applying LUT: " + lut.name)
         im_array = np.asarray(im, dtype=np.float32) / 255
+        is_non_default_domain = not np.array_equal(lut.domain, np.array([[0., 0., 0.], [1., 1., 1.]]))
+        dom_scale = None
+        if is_non_default_domain:
+            dom_scale = lut.domain[1] - lut.domain[0]
+            im_array = im_array * dom_scale + lut.domain[0]
         if log:
             im_array = im_array ** (1/2.2)
         im_array = lut.apply(im_array)
         if log:
             im_array = im_array ** (2.2)
+        if is_non_default_domain:
+            im_array = (im_array - lut.domain[0]) / dom_scale
         im_array = im_array * 255
         new_im = Image.fromarray(np.uint8(im_array))
         if output_path is None:
