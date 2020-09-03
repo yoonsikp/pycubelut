@@ -39,7 +39,7 @@ def read_lut(lut_path, clip=False):
     return lut
 
 
-def process_image(image_path, output_path, thumb, lut, log):
+def process_image(image_path, output_path, thumb, lut, log, no_prefix=False):
     """Opens the image at <image_path>, transforms it using the passed
     <lut> with trilinear interpolation, and saves the image at
     <output_path>, or if it is None, then the same folder as <image_path>.
@@ -91,12 +91,12 @@ def process_image(image_path, output_path, thumb, lut, log):
             im_array = (im_array - lut.domain[0]) / dom_scale
         im_array = im_array * 255
         new_im = Image.fromarray(np.uint8(im_array))
-        if output_path is None:
-            new_im.save(image_name + '_' + lut.name + image_ext,
-                        quality=95)
-        else:
-            new_im.save(output_path + os.path.basename(image_name) +
-                        '_' + lut.name + image_ext, quality=95)
+        image_dir, image_filename = os.path.split(image_path)
+        output_dir = output_path if output_path is not None else image_dir
+        output_filename = lut.name + image_ext
+        if not no_prefix:
+            output_filename = os.path.basename(image_filename) + '_' + output_filename
+        new_im.save(os.path.join(output_dir, output_filename), quality=95)
 
 def main():
     # import tifffile as tiff
@@ -105,13 +105,17 @@ def main():
     import random
 
     parser = argparse.ArgumentParser(
-        description="Tool for applying Adobe Cube LUTs to images")
+        description="Tool for applying Adobe Cube LUTs to images\n\n"
+                    "Output images are JPEGs (quality 95), named '<INPUT>_<LUT>.jpg' by default.")
     parser.add_argument("LUT",
                     help="Cube LUT filename/folder")
     parser.add_argument("INPUT",
                         help="input image filename/folder")
     parser.add_argument("-o", "--out",
                         help="output image folder")
+    parser.add_argument("-np", "--no-prefix",
+                        help="whether to not prefix output files with the image filename "
+                             "(only possible if INPUT is not a directory)", action="store_true")
     parser.add_argument("-g", "--log",
                         help="convert to Log before LUT", action="store_true")
     parser.add_argument("-c", "--clip",
@@ -183,12 +187,12 @@ def main():
             if os.path.isfile(file_path):
                 for lut in luts:
                     image_queue.append((file_path, args.out,
-                        args.thumb, lut, args.log))
+                        args.thumb, lut, args.log, args.no_prefix))
     else:
         # process single image
         for lut in luts:
             image_queue.append((args.INPUT, args.out,
-                args.thumb, lut, args.log))
+                args.thumb, lut, args.log, args.no_prefix))
 
     logging.info("Starting pool with max " + str(len(image_queue))
                     + " tasks in queue")
