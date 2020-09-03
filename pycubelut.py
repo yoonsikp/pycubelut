@@ -24,6 +24,7 @@ def read_lut(lut_path, clip=False):
         upper bounds
     """
     lut: Union[LUT3x1D, LUT3D] = read_LUT_IridasCube(lut_path)
+    lut.name = os.path.splitext(os.path.basename(lut_path))[0]  # use base filename instead of internal LUT name
 
     if clip:
         if lut.domain[0].max() == lut.domain[0].min() and lut.domain[1].max() == lut.domain[1].min():
