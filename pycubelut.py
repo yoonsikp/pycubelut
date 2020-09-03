@@ -9,9 +9,34 @@ formats. This supports applying multiple LUTs and batch image processing.
 
 import logging
 import numpy as np
-from colour.io.luts.iridas_cube import read_LUT_IridasCube
+from colour.io.luts.iridas_cube import read_LUT_IridasCube, LUT3D, LUT3x1D
 import os
 from multiprocessing import Pool
+from typing import Union
+
+
+def read_lut(lut_path, clip=False):
+    """
+    Reads a LUT from the specified path, returning instance of LUT3D or LUT3x1D
+
+    <lut_path>: the path to the file from which to read the LUT (
+    <clip>: flag indicating whether to apply clipping of LUT values, limiting all values to the domain's lower and
+        upper bounds
+    """
+    lut: Union[LUT3x1D, LUT3D] = read_LUT_IridasCube(lut_path)
+
+    if clip:
+        if lut.domain[0].max() == lut.domain[0].min() and lut.domain[1].max() == lut.domain[1].min():
+            lut.table = np.clip(lut.table, lut.domain[0, 0], lut.domain[1, 0])
+        else:
+            if len(lut.table.shape) == 2:  # 3x1D
+                for dim in range(3):
+                    lut.table[:, dim] = np.clip(lut.table[:, dim], lut.domain[0, dim], lut.domain[1, dim])
+            else:  # 3D
+                for dim in range(3):
+                    lut.table[:, :, :, dim] = np.clip(lut.table[:, :, :, dim], lut.domain[0, dim], lut.domain[1, dim])
+
+    return lut
 
 
 def process_image(image_path, output_path, thumb, lut, log):
@@ -89,6 +114,9 @@ def main():
                         help="output image folder")
     parser.add_argument("-g", "--log",
                         help="convert to Log before LUT", action="store_true")
+    parser.add_argument("-c", "--clip",
+                        help="whether to clip LUT values to the domain's bounds, "
+                             "which can fix issues with certain LUT exports", action="store_true")
     parser.add_argument("-v", "--verbose",
                         help="control verbosity and info messages",
                         action='append_const', const=1)
@@ -136,14 +164,14 @@ def main():
             elif not os.path.isfile(file_path):
                 continue
             else:
-                luts.append(read_LUT_IridasCube(file_path))
+                luts.append(read_lut(file_path, clip=args.clip))
     else:
         # Exit if args.LUT is not a file
         if not os.path.isfile(args.LUT):
             logging.error(args.LUT + " doesn't exist")
             exit(1)
         # Single lut at <luts[0]>
-        luts.append(read_LUT_IridasCube(args.LUT))
+        luts.append(read_lut(args.LUT, clip=args.clip))
 
     image_queue = []
     # determine if input is a folder
@@ -173,7 +201,7 @@ def main():
     logging.info("Completed in" + '% 6.2f' % (end_time - start_time) + "s")
 
 
-__all__ = ['process_image']
+__all__ = ['process_image', 'read_lut']
 
 
 # Command Line Interface
