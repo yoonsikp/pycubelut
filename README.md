@@ -30,25 +30,23 @@ In the context of images, a Lookup Table (LUT) is a table describing a transform
 Warning: If your input image is in a Log colorspace, make sure to choose a Log LUT!
 ```
 $ cubelut --help
-usage: pycubelut.py [-h] [-o OUT] [-g] [-c] [-v] [-t [THUMB]] [-j JOBS] LUT INPUT                                                      
-                                                                                   
-Tool for applying Adobe Cube LUTs to images                                        
-                                                                                   
-positional arguments:                                                              
-  LUT                   Cube LUT filename/folder                                   
-  INPUT                 input image filename/folder                                
-                                                                                   
-optional arguments:                                                                
-  -h, --help            show this help message and exit                            
-  -o OUT, --out OUT     output image folder                                        
-  -g, --log             convert to Log before LUT                                  
-  -c, --clip            whether to clip LUT values to the domain's bounds,         
-                        which can fix issues with certain LUT exports              
-  -v, --verbose         control verbosity and info messages                        
-  -t [THUMB], --thumb [THUMB]                                                      
-                        resizes to <= 500px, optionally specify max size           
-  -j JOBS, --jobs JOBS  number of processes to spawn, defaults to number of        
-                        logical CPUs                                               
+usage: cubelut [-h] [-o OUT] [-g] [-v] [-t [THUMB]] [-j JOBS] LUT INPUT
+
+Tool for applying Adobe Cube LUTs to images
+
+positional arguments:
+  LUT                   Cube LUT filename/folder
+  INPUT                 input image filename/folder
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -o OUT, --out OUT     output image folder
+  -g, --log             convert to Log before LUT
+  -v, --verbose         control verbosity and info messages
+  -t [THUMB], --thumb [THUMB]
+                        resizes to <= 500px, optionally specify max size
+  -j JOBS, --jobs JOBS  number of processes to spawn, defaults to number of
+                        logical CPUs
 ```
 
 ### Multiple LUTs
