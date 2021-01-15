@@ -10,12 +10,8 @@ The CubeLUT class has complete Cube LUT parsing and transform capabilities.
 
 import logging
 import numpy as np
-from colour.algebra.interpolation import table_interpolation_tetrahedral, \
-    table_interpolation_trilinear
-from scipy.interpolate import RegularGridInterpolator
 import os
 from multiprocessing import Pool
-
 
 class CubeLUT:
     """This class holds Cube LUT data and methods to apply the LUT to 2D RGB
@@ -87,9 +83,9 @@ class CubeLUT:
                 else:
                     lut_data.append([float(num) for num in line.split()])
         # convert self.data to numpy format
-        self.data = np.array(lut_data)
+        self.data = np.array(lut_data, dtype=np.float32)
         x = self.size
-        self.data = self.data.reshape([x, x, x, 3], order='F')
+        self.data = np.ascontiguousarray(self.data.reshape([x, x, x, 3], order='F'))
         if self.domain_min != (0., 0., 0.) or self.domain_max != (1., 1., 1.):
             logging.warning("nonstandard domain for LUT, output may be wrong")
 
@@ -125,27 +121,23 @@ class CubeLUT:
             image[i] = table_interpolation_trilinear(row, self.data)
         return image
 
-    def _buggy_transform_trilinear(self, image, in_place=False):
+    def gpu_transform_trilinear(self, image):
         """Trilinear interpolation using scipy interpolation methods. Slower
         than the <transform_trilinear> method, and has bugs.
 
         <image> is the 2D RGB array (i.e. 3D array)
-        <in_place> specifies if <image> should be transformed directly
         """
-        if not in_place:
-            image = np.copy(image)
-
+        import shader
         # save image shape for later
         orig_image_shape = image.shape
         # change 2D RGB -> 1D RGB
-        image = image.reshape([-1, 3])
-        # equally spaced grid from 0 to 1
-        x = np.linspace(0, 1, self.size)
-        # for RGB channels respectively
-        for i in [0, 1, 2]:
-            i_func = RegularGridInterpolator((x, x, x), self.data[:, :, :, i])
-            image[:, i] = i_func(image[:])
-        return image.reshape(orig_image_shape)
+        # needed for memory view
+        print(self.filename)
+        image = np.ascontiguousarray(image.reshape([-1, 3]))
+        size = np.ascontiguousarray(np.int32(self.size))
+        out = shader.compute_with_buffers({0: image, 2: self.data, 3: size}, {1: image.nbytes}, shader.compute_shader, image.nbytes)
+        numpy_data = np.frombuffer(out[1].cast('c').cast('f'), np.float32)
+        return numpy_data.reshape(orig_image_shape)
 
 def process_image(image_path, output_path, thumb, lut, log):
     """Opens the image at <image_path>, transforms it using the passed
@@ -187,7 +179,7 @@ def process_image(image_path, output_path, thumb, lut, log):
         im_array = np.asarray(im, dtype=np.float32) / 255
         if log:
             im_array = im_array ** (1/2.2)
-        lut.transform_trilinear(im_array, in_place=True)
+        im_array = lut.gpu_transform_trilinear(im_array)
         if log:
             im_array = im_array ** (2.2)
         im_array = im_array * 255
@@ -225,6 +217,8 @@ def main():
     parser.add_argument("-j", "--jobs", type=int,
                          help="number of processes to spawn, defaults to "
                          "number of logical CPUs")
+    parser.add_argument("-k", "--hack",
+                         help="hack for macOS", action="store_true")
     args = parser.parse_args()
     args.verbose = 0 if args.verbose is None else sum(args.verbose)
 
@@ -291,13 +285,20 @@ def main():
 
     logging.info("Starting pool with max " + str(len(image_queue))
                     + " tasks in queue")
-    with Pool(processes=args.jobs, maxtasksperchild=20) as pool:
-        random.shuffle(image_queue)
-        pool.starmap(process_image, image_queue)
-
+    random.shuffle(image_queue)
+    if len(image_queue) == 1:
+        process_image(*image_queue[0])
+    elif args.hack:
+        import subprocess
+        for i in image_queue:
+            subprocess.run(["python3", "pycubelut.py", i[3].filename, i[0]])
+    else:
+        for i in image_queue:
+            process_image(*i)
     end_time = time.time()
-
     logging.info("Completed in" + '% 6.2f' % (end_time - start_time) + "s")
+
+
 
 __all__ = ['CubeLUT']
 # Command Line Interface
