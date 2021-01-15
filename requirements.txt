@@ -4,3 +4,4 @@ numpy
 pillow
 scipy
 six
+pyshader
