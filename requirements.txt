@@ -1,5 +1,5 @@
 colour-science
-wgpu-py
+wgpu
 numpy
 pillow
 scipy
