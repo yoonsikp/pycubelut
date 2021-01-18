@@ -134,6 +134,8 @@ class CubeLUT:
         # needed for memory view
         print(self.filename)
         image = np.ascontiguousarray(image.reshape([-1, 3]))
+        # RGB to RGBA
+        print(image.shape)
         size = np.ascontiguousarray(np.int32(self.size))
         out = shader.compute_with_buffers({0: image, 2: self.data, 3: size}, {1: image.nbytes}, shader.compute_shader, image.nbytes)
         numpy_data = np.frombuffer(out[1].cast('c').cast('f'), np.float32)
